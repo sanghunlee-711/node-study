@@ -1,0 +1,17 @@
+{
+  "name": "leanr-express",
+  "version": "0.0.1",
+  "description": "익스프레스를 배워보자!",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "SanghunLee",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
