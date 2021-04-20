@@ -77,26 +77,78 @@ app.use(cookieParser({ name: "sanhunlee" }));
 //   });
 // });
 app.use(cookieParser(process.env.COOKIE_SECRET));
+//세션 관리용 미들웨어이며 로그인 등의 이유로 세션을 구현하거나 특정 사용자를 위한 데이터를 임시적으로 저장할 때 유용하다.
+//세션은 사용자 별로 req.session객체 안에 유지된다.
+//1.5버전 이전에는 내부적으로 cookie-parser를 사용하고 있어 cookie-parser미들웨어보다 뒤에 배치해야했지만,
+//1.5버전 이후로부터는 사용하지 않게 되어 순서가 상관 없어졌다.
+//하지만 버전에 따라 위험이 있기에 cookie-parser미들웨어보다 뒤에 놓는 것이 좋다.
 app.use(
   session({
+    //resave는 요청이 올 때 세션에 수정사항이 생기지 않더라도 세션을 다시 저장할지 설정하는 것.
     resave: false,
+    //saveUninitialized는 세션에 저장할 내역이 없더라도 처음부터 세션을 생성할지 설정하는 것이다.
     saveUninitialized: false,
+    //안전하게 쿠키를 서명하는데 secret의 값이 필요하고 cookie-parser의 secret과 '같게' 설정하는 것이 좋다.
     secret: process.env.COOKIE_SECRET,
+    //express session은 세션 관리 시 클라이언트에 쿠키를 보내는데 세션쿠키가 이것이다.
     cookie: {
+      //쿠키 옵션은 sessioncookie에 대한 설정이며 sameSite httpOnly, secure 등 일반적인 쿠키옵션이 모두 제공된다.
+      //httpOnly옵션을 true로 설정 시 클라이언트에서 쿠키를 확인하지 못하게 되고
       httpOnly: true,
+      //secure옵션을 false로 하여 https가 아닌 다른환경에서도 사용할 수 있게 되었다.
+      //배포시에는 true로 하여 https를 적용하는 것이 좋다.
       secure: false,
+      //추가로 store라는 옵션도 존재하는데 메모리에 세션을 저장하는 것이 아닌 DB를 store에 연결하여 세션을 유지하는 방식이다(그렇지 않으면 서버 재 시작시 메모리가 초기화 되므로)
     },
+    //세션쿠키의 이름은 name 옵션으로 설정한다.
+    //기본값은 connect.sid이다.
     name: "session-cookie",
   })
 );
-//주소를 첫번째 인수로 넣어주지 않으면 미들웨어는 모든요청에서 실행되고, 주소를 넣는다면 해당하는 요청에서만 실행된다고 보면된다.
-app.use((req, res, next) => {
-  console.log("모든 요청에 다 실행됩니다.");
-  console.log("@@@");
-  console.log(req.cookies);
-  console.log("@@@@");
-  next();
+
+const multer = require("multer");
+const fs = require("fs");
+
+try {
+  fs.readdirSync("uploads");
+} catch (error) {
+  console.error("uploads폴더가 없어 uploads폴더를 생성합니다");
+  fs.mkdirSync("uploads");
+}
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploads/");
+    },
+    filename(req, file, done) {
+      const ext = path.extname(file.originalname);
+      done(null, path.basename(file.originalname, ext) + Date.now + ext);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
+
+app.get("/upload", (req, res) => {
+  res.sendFile(path.join(__dirname, "multipart.html"));
+});
+
+app.post(
+  "/upload",
+  upload.fields([{ name: "image1" }, { name: "image2" }]),
+  (req, res) => {
+    console.log(req.files, req.body);
+    res.send("ok");
+  }
+);
+
+//주소를 첫번째 인수로 넣어주지 않으면 미들웨어는 모든요청에서 실행되고, 주소를 넣는다면 해당하는 요청에서만 실행된다고 보면된다.
+// app.use((req, res, next) => {
+//   console.log("모든 요청에 다 실행됩니다.");
+//   console.log("@@@");
+//   console.log(req.cookies);
+//   console.log("@@@@");
+//   next();
+// });
 
 app.get(
   "/",
