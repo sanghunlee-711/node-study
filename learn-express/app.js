@@ -14,6 +14,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 
 dotenv.config();
+const indexRouter = require("./routes"); //"./routes/index.js" 와 동일하다
+const userRouter = require("./routes/user");
 const app = express();
 //app.set("port", 포트)로 서버가 실행될 포트를 설정한다.
 //process.env객체에 PORT 속성이 있다면 그 값을 사용하고, 없다면 기본 값으로 3000번 포트를 이용하도록 되어있다!
@@ -106,68 +108,16 @@ app.use(
   })
 );
 
-const multer = require("multer");
-const fs = require("fs");
+//indexRouter는 app.use("/")에 연결
+app.use("/", indexRouter); //indexRouter는 use의 '/'와 indexRouter경로의 get의 '/'가 합쳐짐
+//userRouter는 app.use("/user")에 연결
+app.use("/", userRouter); //userRouter use의 '/user'와 userRouter경로의 get의 '/'가 합쳐짐
 
-try {
-  fs.readdirSync("uploads");
-} catch (error) {
-  console.error("uploads폴더가 없어 uploads폴더를 생성합니다");
-  fs.mkdirSync("uploads");
-}
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, done) {
-      done(null, "uploads/");
-    },
-    filename(req, file, done) {
-      const ext = path.extname(file.originalname);
-      done(null, path.basename(file.originalname, ext) + Date.now + ext);
-    },
-  }),
-  limits: { fileSize: 5 * 1024 * 1024 },
+//일치하는 라우터가 없을 때 404 코드를 응답하는 역할을 위해 존재
+app.use((req, res, next) => {
+  res.status(404).send("Not Found");
 });
 
-app.get("/upload", (req, res) => {
-  res.sendFile(path.join(__dirname, "multipart.html"));
-});
-
-app.post(
-  "/upload",
-  upload.fields([{ name: "image1" }, { name: "image2" }]),
-  (req, res) => {
-    console.log(req.files, req.body);
-    res.send("ok");
-  }
-);
-
-//주소를 첫번째 인수로 넣어주지 않으면 미들웨어는 모든요청에서 실행되고, 주소를 넣는다면 해당하는 요청에서만 실행된다고 보면된다.
-// app.use((req, res, next) => {
-//   console.log("모든 요청에 다 실행됩니다.");
-//   console.log("@@@");
-//   console.log(req.cookies);
-//   console.log("@@@@");
-//   next();
-// });
-
-app.get(
-  "/",
-  //첫번째 미들웨어
-  (req, res, next) => {
-    console.log("GET/ 요청에서만 실행됩니다.");
-    next();
-    //두번째 미들웨어
-    //여기서 발생한 에러는 아래 app.use로 적용된 미들웨어에서 처리하게 된다.
-  },
-  (req, res) => {
-    throw new Error("에러는 에러처리 미들웨어로 갑니다!");
-  }
-);
-
-//미들웨어 사용을 위한 use메서드
-//미들웨어는 위에서부터 아래로 순서대로 실행되면서 요청과 응답사이에 특별한 기능을 추가할 수 있다.
-//next라는 세번째 매개변수는 다음 미들웨어로 넘어가기 위한 함수이다(js generator를 생각해보자)
-//next를 실행하지 않으면 다음 미들웨어가 실행되지 않는다.
 app.use((err, req, res, next) => {
   //에러처리 미들웨어는 err, req, res, next 네가지 매개변수를 꼭 받아야한다
   console.error(err);
