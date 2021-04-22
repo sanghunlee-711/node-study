@@ -15,6 +15,7 @@ const bodyParser = require("body-parser");
 dotenv.config();
 const indexRouter = require("./routes"); //"./routes/index.js" 와 동일하다
 const userRouter = require("./routes/user");
+const pugMainRouter = require("./routes/pug");
 const app = express();
 //app.set("port", 포트)로 서버가 실행될 포트를 설정한다.
 //process.env객체에 PORT 속성이 있다면 그 값을 사용하고, 없다면 기본 값으로 3000번 포트를 이용하도록 되어있다!
@@ -115,7 +116,7 @@ app.use(
 app.use("/", indexRouter); //indexRouter는 use의 '/'와 indexRouter경로의 get의 '/'가 합쳐짐
 //userRouter는 app.use("/user")에 연결
 app.use("/", userRouter); //userRouter use의 '/user'와 userRouter경로의 get의 '/'가 합쳐짐
-
+app.use("/", pugMainRouter);
 //일치하는 라우터가 없을 때 404 코드를 응답하는 역할을 위해 존재
 app.use((req, res, next) => {
   res.status(404).send("Not Found");
