@@ -1,7 +1,6 @@
 //express모듈을 실행해 app변수에 할당한다.
 //express 내부에 Http모듈이 내장되어 있으므로 서버의 역할을 할 수 있다.
 const express = require("express");
-
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -16,13 +15,18 @@ const bodyParser = require("body-parser");
 dotenv.config();
 const indexRouter = require("./routes"); //"./routes/index.js" 와 동일하다
 const userRouter = require("./routes/user");
+const pugMainRouter = require("./routes/pug");
 const app = express();
 //app.set("port", 포트)로 서버가 실행될 포트를 설정한다.
 //process.env객체에 PORT 속성이 있다면 그 값을 사용하고, 없다면 기본 값으로 3000번 포트를 이용하도록 되어있다!
 //이렇게 app.set("키","값")으로 데이터를 저장할 수 있다.
 //이 데이터를 나중에 app.get(키)로 가져올 수 있다.
 app.set("port", process.env.PORT || 3000);
-
+//template파일들이 위치할 폴더를 지정 , res.render메서드가 이 폴더 기준으로 템플릿 엔진을 찾아서 렌더링한다.
+//ex) res.render("admin/main") -> views/admin/main.pug를 렌더링한다.
+app.set("views", path.join(__dirname, "views"));
+//어떤 종류의 view엔진을 사용할 지 나타낸다
+app.set("view engine", "pug");
 //설치했던 패키지들을 아래에 연결한다
 //app.use에 연결할 때 req,res,next 같은 것들이 보이지 않지만 미들웨어 내부에 들어있는 것이다.
 //next도 내부적으로 호출하기에 다음 미들웨어로 넘어갈 수 있다.
@@ -112,7 +116,7 @@ app.use(
 app.use("/", indexRouter); //indexRouter는 use의 '/'와 indexRouter경로의 get의 '/'가 합쳐짐
 //userRouter는 app.use("/user")에 연결
 app.use("/", userRouter); //userRouter use의 '/user'와 userRouter경로의 get의 '/'가 합쳐짐
-
+app.use("/", pugMainRouter);
 //일치하는 라우터가 없을 때 404 코드를 응답하는 역할을 위해 존재
 app.use((req, res, next) => {
   res.status(404).send("Not Found");
