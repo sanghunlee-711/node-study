@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router("/");
+const path = require("path");
 
 router.get("/", (req, res) => {
-  res.send("여기는 메인 :)");
+  const newPath = path.join(__dirname, "..", "views/index.html");
+
+  res.sendFile(newPath);
 });
 
 module.exports = router;
