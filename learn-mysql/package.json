@@ -1,11 +1,13 @@
 {
-  "name": "leanr-express",
+  "name": "learn-mysql",
   "version": "0.0.1",
-  "description": "익스프레스를 배워보자!",
+  "description": "mysql을 배워보자",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "SanghunLee",
   "license": "MIT",
   "dependencies": {

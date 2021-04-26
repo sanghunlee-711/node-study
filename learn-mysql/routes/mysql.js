@@ -1,10 +1,8 @@
 const express = require("express");
-
 const router = express.Router();
 
-//Get / Router
 router.get("/", (req, res) => {
-  res.render("index");
+  res.send("여기는 mysql site");
 });
 
 module.exports = router;
