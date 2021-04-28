@@ -1,4 +1,4 @@
-//logic for user information model
+//For user information model
 
 const Sequelize = require("sequelize");
 
@@ -18,6 +18,7 @@ module.exports = class User extends (
           allowNull: false,
         },
         password: {
+          //local: 로컬로그인, kakao: 카카오 로그인
           type: Sequelize.STRING(100),
           allowNull: true,
         },
@@ -44,5 +45,5 @@ module.exports = class User extends (
     );
   }
 
-  static associae(db) {}
+  static associate(db) {}
 };
