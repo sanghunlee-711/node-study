@@ -8,6 +8,7 @@ const dotenv = require("dotenv");
 
 dotenv.config(); //for setting .env file
 const pageRouter = require("./routes/page"); //setting for pageRouter ;
+const { sequelize } = require("./models");
 
 const app = express(); // make express app;
 app.set("port", process.env.PORT || 2021); //save port setting at express instance obj for using 'port' with get method
@@ -17,6 +18,14 @@ nunjucks.configure("views", {
   express: app,
   watch: true,
 });
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("데이터베이스 연결 성공");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 app.use(morgan("dev")); //use morgan for dev setting
 app.use(express.static(path.join(__dirname, "public"))); // static file route setting

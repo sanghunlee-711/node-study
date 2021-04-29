@@ -29,5 +29,9 @@ module.exports = class Post extends (
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    //User모델과 Post모델은 1대다 관계이므로 belongsTo
+    db.Post.belongsTo(db.User);
+    db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
+  }
 };
