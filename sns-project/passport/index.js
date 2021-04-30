@@ -1,6 +1,6 @@
 const passport = require("passport");
 const local = require("./localStrategy");
-// const kakao = require("./kakaoStrategy");
+const kakao = require("./kakaoStrategy");
 const User = require("../models/user");
 
 module.exports = () => {
@@ -21,5 +21,5 @@ module.exports = () => {
   //serializeUser를 통해 세션에 저장하였던 아이디를 받아 데이터베이스에서 사용자 정보를 조회한다. 조회한 정보를 req.user에 저장하므로 앞으로는 req.user를 통해 로그인한 사용자의 정보를 가져올 수 있다.
 
   local();
-  // kakao();
+  kakao();
 };

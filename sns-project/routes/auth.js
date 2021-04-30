@@ -69,4 +69,19 @@ router.get("/logout", isLoggedIn, (req, res) => {
   res.redirect("/"); //세션정보를 지운 후 메인페이지로 돌아간다.
 });
 
+// /auth/kakao로 접근하면 카카오 로그인 과정이 실행된다.
+// 처음에는 카카오 로그인창으로 리다이렉트가 될 것이고 그창에서 로그인 성공여부 결과를 /auth/kakao/callback에서 받을 것이다.
+//로컬로그인과는 다르게 authenticate메서드에 콜백함수를 제공하지 않는다. -> 카카오 로그인은 성공시 내부적으로 req.login을 호출하기 때문
+router.get("/kakao", passport.authenticate("kakao"));
+
+router.get(
+  "/kakao/callback",
+  passport.authenticate("kakao", {
+    failureRedirect: "/",
+  }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
 module.exports = router;
