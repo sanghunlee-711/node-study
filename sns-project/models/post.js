@@ -1,5 +1,4 @@
 const Sequelize = require("sequelize");
-const { upsert } = require("./user");
 
 module.exports = class Post extends (
   Sequelize.Model
