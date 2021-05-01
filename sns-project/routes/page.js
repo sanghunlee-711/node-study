@@ -1,6 +1,6 @@
 const express = require("express");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
-const { Post, User } = require("../models");
+const { Post, User, Hashtag } = require("../models");
 
 const router = express.Router();
 
@@ -8,9 +8,11 @@ router.use((req, res, next) => {
   //res. locals property is an object that contains response local variables scoped to the request
   //,it's only available to the views rendered during that request/response cycle (if any).
   res.locals.user = req.user; //nunjucks에서 user객체를 통해 사용자 정보에 접근할 수 있게 만들기 위해 등록
-  res.locals.followerCount = 0;
-  res.locals.followingCount = 0;
-  res.locals.followerList = [];
+  res.locals.followerCount = req.user ? req.user.Followers.length : 0;
+  res.locals.followingCount = req.user ? req.user.Followings.length : 0;
+  res.locals.followerList = req.user
+    ? req.user.Followings.map((f) => f.id)
+    : [];
   next();
 });
 
@@ -37,12 +39,40 @@ router.get("/", async (req, res, next) => {
     });
 
     res.render("main", {
-      title: "NodeBIIIRDD",
+      title: "snsproject",
       twits: posts,
     });
   } catch (err) {
     console.error(err);
     next(err);
+  }
+});
+
+router.get("/hashtag", async (req, res, next) => {
+  const query = req.query.hashtag;
+  //쿼리스트링으로 해시태그 이름을 받고 해시태그값이 없는 경우라면 메인페이지로 돌려보낸다.
+  if (!query) {
+    return res.redirect("/");
+  }
+
+  try {
+    //db에서 hashtag 조회
+    const hashtag = await Hashtag.findOne({ whrer: { title: query } });
+    let posts = [];
+
+    if (hashtag) {
+      //sequelize에서 제공하는 getPosts로 모든 게시글을 가져온다. 가져올 때 작성자 정보를 합쳐서 가져온다(include)
+      posts = await hashtag.getPosts({ include: [{ model: User }] });
+    }
+
+    //메인페이지를 렌더하면서 twits에 posts를 할당해서 보내준다
+    return res.render("main", {
+      title: `${query} || SnSProject`,
+      twits: posts,
+    });
+  } catch (err) {
+    console.error(err);
+    return next(err);
   }
 });
 

@@ -12,7 +12,15 @@ module.exports = () => {
   //done 함수의 첫번째 인수는 에러 발생시 사용, 두번째 인수에는 저장하고 싶은 데이터를 세션에 저장한다. 세션에 사용자 정보를 모두 저장하면 용량이 너무 커지므로 id만 저장
 
   passport.deserializeUser((id, done) => {
-    User.findOne({ where: id })
+    //세션에 저장된 아이디로 사용자정보를 조회할때 팔로잉 목록과 팔로워 목록도 같이 조회가 된다.
+    User.findOne({
+      where: { id },
+      include: [
+        { model: User, attributes: ["id", "nick"], as: "Followers" },
+        { model: User, attributes: ["id", "nick"], as: "Followings" },
+      ],
+      //include에서 attributes를 지정하고 있는 이유는 실수로 비밀번호를 조회하는 것을 방지하기 위함
+    })
       .then((user) => done(null, user)) //여기서 req.user에 저장
       .catch((err) => done(err));
   });

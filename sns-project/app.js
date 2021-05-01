@@ -11,6 +11,7 @@ dotenv.config(); //for setting .env file
 const pageRouter = require("./routes/page"); //setting for pageRouter ;
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const userRouter = require("./routes/user");
 const { sequelize } = require("./models");
 const passportConfig = require("./passport"); //./passport/index.js와 같다
 
@@ -34,6 +35,7 @@ sequelize
 
 app.use(morgan("dev")); //use morgan for dev setting
 app.use(express.static(path.join(__dirname, "public"))); // static file route setting
+app.use("/img", express.static(path.join(__dirname, "uploads"))); //업로드할 이미지를 제공할 /img라우터를 express.static 미들웨어로 upload폴더와 연결
 app.use(express.json()); //set middleware for using only json type when requesting with header data
 app.use(express.urlencoded({ extended: false })); // set middleware for adopting url encoded type when headers set
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -55,6 +57,7 @@ app.use(passport.session()); //req session 객체에 passport 정보를 저장�
 app.use("/", pageRouter); //use pageRouter
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use("/user", userRouter);
 
 //error middleware setting
 app.use((req, res, next) => {
