@@ -15,11 +15,15 @@
           <div class="user-name">{{'안녕하세요! ' + user.nick + '님'}}</div>
           <div class="half">
             <div>팔로잉</div>
-            <div class="count following-count">{{followingCount}}</div>
+            <a href="/profile">
+              <div class="count following-count">{{followingCount}}</div>
+            </a>
           </div>
           <div class="half">
-            <div>팔로워</div>
-            <div class="count follower-count">{{followerCount}}</div>
+            <a href="/profile">
+              <div>팔로워</div>
+              <div class="count follower-count">{{followerCount}}</div>
+            </a>
           </div>
           <input id="my-id" type="hidden" value="{{user.id}}" />
           <a id="my-profile" href="/profile" class="btn">내 프로필</a>
