@@ -23,12 +23,8 @@ router.post("/:id/follow", isLoggedIn, async (req, res, next) => {
 });
 
 router.post("/:id/destroy", isLoggedIn, async (req, res, next) => {
-  console.log("가긴가는거지");
-
   try {
     const user = await User.findOne({ where: { id: req.user.id } });
-    // const followingList = await User.findOne({ where: { id: req.user.id } });
-    console.log(user);
     if (user) {
       await user.removeFollowing(parseInt(req.params.id, 10));
       res.send("Delete Follow");

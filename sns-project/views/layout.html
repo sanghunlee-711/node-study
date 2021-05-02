@@ -7,8 +7,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="/main.css" />
   </head>
+  <style>
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .nav-wrapper li {
+      color: gray;
+      display: block;
+      width: fit-content;
+      margin: 10px 30px;
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
   <body>
     <div class="container">
+      <nav>
+        <ul class="nav-wrapper">
+          <li><a href="/">HOME</a></li>
+          <li><a href="/profile">MY PROFILE</a></li>
+        </ul>
+      </nav>
       <div class="profile-wrap">
         <div class="profile">
           {% if user and user.id %}

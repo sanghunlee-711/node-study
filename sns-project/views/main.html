@@ -100,19 +100,19 @@
   });
 
   document.querySelectorAll(".destroy-follow").forEach(function (tag) {
-    console.log("word?");
-
     tag.addEventListener("click", function () {
       const userId = tag.parentNode.querySelector(".twit-user-id").value;
       console.log(userId);
-      axios
-        .post(`/user/${userId}/destroy`)
-        .then(() => {
-          location.reload();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      if (confirm("팔로우를 끊겠습니까?")) {
+        axios
+          .post(`/user/${userId}/destroy`)
+          .then(() => {
+            location.reload();
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
     });
   });
 </script>
