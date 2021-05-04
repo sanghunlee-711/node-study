@@ -26,15 +26,11 @@ exports.verifyToken = (req, res, next) => {
     // 첫번째 인수로는 토큰을 두번째 인수로는 토큰의 비밀키를 넣는다.
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
 
-    console.log("@@@");
-    console.log(req.decoded);
-    console.log("@@@");
-
     return next();
   } catch (err) {
     console.error(err);
     //일치하지 않는 비밀키이거나 유효기간이 지난 경우라면 catch문으로 이동하게 된다.
-    if (error.name === "TokenExpiredError") {
+    if (err.name === "TokenExpiredError") {
       //유효기간 초과
       return res.status(419).json({
         code: 419,

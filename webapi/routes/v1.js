@@ -20,7 +20,7 @@ router.post("/token", async (req, res) => {
     console.log(domain);
 
     //없는 경우 에러 발생
-    if (!domian) {
+    if (!domain) {
       return res.status(401).json({
         code: 401,
         message: "등록되지 않은 도메인입니다. 먼저 도메인을 등록하세용",
@@ -35,7 +35,7 @@ router.post("/token", async (req, res) => {
       },
       process.env.JWT_SECRET, //비밀키
       {
-        expiresIn: "1m", //1minute, 유효기간
+        expiresIn: "1000m", //1minute, 유효기간
         issuer: "hoonhun", //발급자
       }
     );
