@@ -4,7 +4,7 @@ const { token } = require("morgan");
 const session = require("express-session");
 
 const router = express.Router();
-const URL = "http://localhost:8002/v1";
+const URL = "http://localhost:8002/v2";
 
 axios.defaults.headers.origin = "http://localhost:4004";
 
