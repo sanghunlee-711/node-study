@@ -32,6 +32,10 @@ const request = async (req, api) => {
   }
 };
 
+router.get("/",(req,res)=>{
+  res.render("main", {key: process.env.CLIENT_SECRET});
+});
+
 router.get("/mypost", async (req, res, next) => {
   try {
     const result = await request(req, "/posts/my");
@@ -56,5 +60,8 @@ router.get("/search/:hashtag", async (req, res, next) => {
     }
   }
 });
+
+
+
 
 module.exports = router;

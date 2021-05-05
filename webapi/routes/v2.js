@@ -1,5 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
+// const url = require('url');
 
 const { verifyToken, apiLimiter } = require('./middlewares');
 const {
@@ -7,6 +9,31 @@ const {
 } = require('../models');
 
 const router = express.Router();
+
+router.use(async (req, res, next) => {
+  // https://stackoverflow.com/questions/59375013/node-legacy-url-parse-deprecated-what-to-use-instead
+  const url = new URL(req.get('origin'));
+  console.log(url);
+  const domain = await Domain.findOne({
+    where: { host: (url.host) } // url.parse is deprecated;
+  });
+
+  if (domain) {
+    // 아래 두가지는 같은 작동이며 미들웨어를 커스터마이징하며 쓰기 위해서 사용하는 방식이 아래방식
+    // router.use(cors())
+    // router.use((req,res,next)=>{
+    //   cors()(req,res,next);
+    // })
+    cors({
+      // origin 속성에 허용할 도메인만 추가
+      origin: req.get('origin'),
+      credentials: true
+    })(req, res, next);
+  }
+  else {
+    next();
+  }
+});
 
 router.post('/token', async (req, res) => {
   const { clientSecret } = req.body;

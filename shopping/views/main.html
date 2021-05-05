@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Front API REQUEST</title>
+  </head>
+  <body>
+    <div id="result"></div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      axios
+        .post("http://localhost:8002/v2/token", {
+          clientSecret: "{{key}}",
+          withCredentials: true, //다른 도메인간의 쿠키 공유를 위한 옵션
+        })
+        .then((res) => {
+          document.querySelector("#result").textContent = JSON.stringify(
+            res.data
+          );
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    </script>
+  </body>
+</html>
