@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "Sanghun Lee",
   "license": "MIT",
@@ -26,6 +27,35 @@
     "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "nodemon": "^2.0.7"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "env": {
+      "es6": true,
+      "browser": true
+    },
+    "rules": {
+      "brace-style": [
+        "error",
+        "stroustrup"
+      ],
+      "comma-dangle": [
+        "error",
+        "never",
+        "single",
+        "double"
+      ],
+      "no-unused-vars": [
+        "warn"
+      ],
+      "no-var": [
+        "off"
+      ],
+      "one-var": [
+        "off"
+      ]
+    }
   }
 }
