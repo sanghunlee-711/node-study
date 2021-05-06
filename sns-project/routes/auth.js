@@ -6,12 +6,12 @@ const User = require("../models/user");
 
 const router = express.Router();
 
-//auth/join 라우터에 해당하며 회원가입 라우터 이다.
+//auth/join 라우터에 해당하며 회원 라우터 이다.
 router.post("/join", isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
     const exUser = await User.findOne({ whrer: { email } }); //같은 이메일 db에서 조회
-    //같은 이메일로 가입했다면 존재한다는 주소로 리다이렉트 시킴
+    //같은 이메일로 했다면 존재한다는 주소로 리다이렉트 시킴
     if (exUser) {
       //에러는 쿼리스트링으로 표시
       return res.redirect("/join?error=exist");
