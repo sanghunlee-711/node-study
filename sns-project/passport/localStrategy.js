@@ -29,7 +29,7 @@ module.exports = () => {
               //done이 호출된 후 다시 passport.authenticate의 콜백함수에서 나머지 로직이 실행된다.
               done(null, exUser);
             } else {
-              done(null, false, { message: "비밀번호가 일치하지 않습니다 :(" });
+              done(null, false, { message: "비밀번호가 일치하지 않습니다.." });
             }
           } else {
             done(null, false, { message: "가입되지 않은 회원입니다.." });
